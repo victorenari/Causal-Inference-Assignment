@@ -15,7 +15,6 @@ for (a in names(variates)){
 }
 variates <- variates[1,]
 
-# Adding interaction term to the interaction term data
 interact <- variates[1,]
 interact['wardur*untype4'] <- interact['wardur']*interact['untype4']
 
@@ -36,8 +35,8 @@ trt_interact[['untype4']] <- 1
 control_interact <- data.frame(interact)
 control_interact[['untype4']] <- 0
 
-effect <- matrix()
-effect_interact <- matrix()
+trt_effect <- matrix()
+trt_effect_interact <- matrix()
 
 i = 0
 for(year in 1:315){
@@ -46,14 +45,14 @@ for(year in 1:315){
   trt_interact['wardur'] = year
   control_interact['wardur'] = year
   i <- i+1
-  effect[i] <- predict(glm1, trt, 'response') - predict(glm1, control, type = 'response')
-  effect_interact[i] <- predict(glm2, trt_interact, 'response') - predict(glm2, control_interact, type = 'response')
+  trt_effect[i] <- predict(glm1, trt, 'response') - predict(glm1, control, type = 'response')
+  trt_effect_interact[i] <- predict(glm2, trt_interact, 'response') - predict(glm2, control_interact, type = 'response')
 }
 
 # Plotting the replication of figure 8
-plot(effect,xlim=c(5,315),ylim=c(0,0.8),type='l',lty = 'dotted', xlab = "Duration of war in months", 
+plot(trt_effect,xlim=c(5,315),ylim=c(0,0.8),type='l',lty = 'dotted', xlab = "Duration of war in months", 
      ylab="Marginal effects of UN peacebuilding operations",xaxs="i",yaxs="i",xaxt="n",yaxt="n", sub="FIG. 8. Causal Effect of Multidimensional UN Peacekeeping Operations")
-lines(effect_interact,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
+lines(trt_effect_interact,xaxt="n",yaxt="n",xaxs="i",yaxs="i")
 axis(1, xaxp=c(0,315,63))
 axis(2, yaxp=c(0.0,0.8,8))
 
